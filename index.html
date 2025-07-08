@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harshit Singhai – Global Cost Estimation Expert</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Custom Colors based on user's palette */
+        :root {
+            --color-blueberry: #6B7A8F;
+            --color-apricot: #F7882F;
+            --color-citrus: #F7C331;
+            --color-apple-core: #DCC7AA;
+            --color-dark-text: #334155; /* Retaining a dark neutral for body text contrast */
+            --color-light-bg: #f8fafc; /* Retaining a very light neutral for general background */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--color-light-bg);
+            color: var(--color-dark-text);
+            overflow-x: hidden; /* Prevent horizontal scroll from animations */
+        }
+        .bg-blueberry { background-color: var(--color-blueberry); }
+        .text-blueberry { color: var(--color-blueberry); }
+        .bg-apricot { background-color: var(--color-apricot); }
+        .text-apricot { color: var(--color-apricot); }
+        .bg-citrus { background-color: var(--color-citrus); }
+        .text-citrus { color: var(--color-citrus); }
+        .bg-apple-core { background-color: var(--color-apple-core); }
+
+        /* Custom gradient using new colors */
+        .bg-gradient-to-r-custom {
+            background-image: linear-gradient(to right, var(--color-blueberry), #475569); /* Blueberry to a darker neutral gray */
+        }
+        .section-reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .section-reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .card-hover-effect {
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .card-hover-effect:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .btn-primary {
+            @apply bg-apricot text-white font-semibold py-3 px-6 rounded-full shadow-lg hover:bg-orange-600 transition duration-300 ease-in-out;
+        }
+        .btn-secondary {
+            @apply bg-transparent border border-apricot text-apricot font-semibold py-3 px-6 rounded-full hover:bg-apricot hover:text-white transition duration-300 ease-in-out;
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <!-- Header/Navigation -->
+    <header class="bg-white shadow-sm py-4 fixed w-full z-50">
+        <nav class="container mx-auto px-4 flex justify-between items-center">
+            <a href="#hero" class="text-2xl font-bold text-blueberry">Harshit Singhai</a>
+            <ul class="hidden md:flex space-x-6">
+                <li><a href="#about" class="text-gray-600 hover:text-apricot transition duration-300">About</a></li>
+                <li><a href="#projects" class="text-gray-600 hover:text-apricot transition duration-300">Projects</a></li>
+                <li><a href="#blog" class="text-gray-600 hover:text-apricot transition duration-300">Blog</a></li>
+                <li><a href="#database" class="text-gray-600 hover:text-apricot transition duration-300">Database</a></li>
+                <li><a href="#tools" class="text-gray-600 hover:text-apricot transition duration-300">Tools</a></li>
+                <li><a href="#contact" class="text-gray-600 hover:text-apricot transition duration-300">Contact</a></li>
+            </ul>
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-600 focus:outline-none">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white py-2 shadow-md">
+            <ul class="flex flex-col items-center space-y-2">
+                <li><a href="#about" class="block py-2 text-gray-600 hover:text-apricot transition duration-300">About</a></li>
+                <li><a href="#projects" class="block py-2 text-gray-600 hover:text-apricot transition duration-300">Projects</a></li>
+                <li><a href="#blog" class="block py-2 text-gray-600 hover:text-apricot transition duration-300">Blog</a></li>
+                <li><a href="#database" class="block py-2 text-gray-600 hover:text-apricot transition duration-300">Database</a></li>
+                <li><a href="#tools" class="block py-2 text-gray-600 hover:text-apricot transition duration-300">Tools</a></li>
+                <li><a href="#contact" class="block py-2 text-gray-600 hover:text-apricot transition duration-300">Contact</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="hero" class="relative h-screen flex items-center justify-center text-center bg-gradient-to-r-custom text-white pt-16">
+        <!-- Background Image/Overlay - Removed background image -->
+        <div class="absolute inset-0 bg-cover bg-center opacity-20" style="background-image: none;"></div>
+        <div class="relative z-10 p-4 max-w-4xl mx-auto">
+            <img src="https://placehold.co/150x150/F7882F/ffffff?text=HS" alt="Harshit Singhai" class="rounded-full w-36 h-36 mx-auto mb-6 border-4 border-white shadow-lg">
+            <h1 class="text-5xl md:text-6xl font-bold mb-4 leading-tight">Harshit Singhai – Global Cost Estimation Expert</h1>
+            <p class="text-xl md:text-2xl text-gray-300 mb-8">Empowering industries with precision costing, database intelligence, and sustainable project savings.</p>
+            <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <a href="#projects" class="btn-primary">View Projects</a>
+                <a href="#blog" class="btn-secondary">Read Blog</a>
+                <a href="#contact" class="btn-secondary">Contact Me</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about" class="py-16 bg-white section-reveal">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <h2 class="text-4xl font-bold text-blueberry mb-8 text-center">About Me</h2>
+            <div class="prose lg:prose-xl text-gray-700 mx-auto">
+                <p class="mb-4">I am a Dynamic Global Should Cost Engineer with over 7 years of experience in cost estimation, modeling, and project cost engineering within the manufacturing sector. My expertise spans diverse manufacturing processes including fabricated parts, castings, forgings, truck systems, and electricals, with a strong background in CNC Machining, DFM, and automation.</p>
+                <p class="mb-4">Throughout my career at companies like Oshkosh AeroTech, JBT Corporation, and Hyster-Yale Group, I have consistently driven cost optimization initiatives, saving significant capital through precise analysis and strategic negotiations. I am skilled in advanced costing tools like aPriori and TCPLM, alongside developing robust Excel and Power BI models for detailed cost analysis and reporting.</p>
+                <p class="mb-4">I thrive in cross-functional team environments, excel in supplier negotiations across global markets (including the U.S., Mexico, Europe, and India), and am passionate about leveraging data and technology to enhance efficiency and decision-making in the manufacturing supply chain.</p>
+                <p class="mb-8">My commitment to continuous learning is reflected in my certifications and courses in areas like Lean Six Sigma, Risk Management (FMEA), and emerging technologies like AI/ChatGPT and Micro/Nano Fabrication Techniques.</p>
+                
+                <h3 class="text-2xl font-semibold text-blueberry mb-4">Key Skills:</h3>
+                <ul class="list-disc list-inside grid grid-cols-1 md:grid-cols-2 gap-2 mb-8">
+                    <li>Cost Estimation & Analysis (Expert)</li>
+                    <li>Should Costing (CNC Milling & Turning)</li>
+                    <li>Manufacturing & Engineering Knowledge</li>
+                    <li>Data Analytics & Visualization (Experienced)</li>
+                    <li>Sourcing & Procurement Strategy (Expert)</li>
+                    <li>Cross-functional & Communication Expertise</li>
+                    <li>Collaboration (Experienced)</li>
+                    <li>CAD/CAM Software (Creo, Catia, UGNX)</li>
+                    <li>Lean Six Sigma & FMEA</li>
+                    <li>AI & Automation in Manufacturing</li>
+                    <li>Predictive Costing & AI Integration</li>
+                    <li>Supply Chain Cost Resilience</li>
+                    <li>Total Cost of Ownership (TCO) Analysis</li>
+                    <li>ESG Costing Principles</li>
+                </ul>
+
+                <div class="text-center">
+                    <a href="https://placehold.co/300x200/F7882F/ffffff?text=Harshit+CV" download="Harshit_Singhai_CV.pdf" class="btn-primary">Download My CV</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects & Case Studies Section -->
+    <section id="projects" class="py-16 bg-apple-core section-reveal">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-blueberry mb-10 text-center">Projects & Case Studies</h2>
+            
+            <!-- Filter/Tag Options (Placeholder) -->
+            <div class="flex flex-wrap justify-center gap-3 mb-8">
+                <button class="px-4 py-2 rounded-full bg-apricot text-white text-sm font-semibold hover:bg-orange-600 transition duration-300">All</button>
+                <button class="px-4 py-2 rounded-full bg-gray-300 text-gray-700 text-sm font-semibold hover:bg-gray-400 transition duration-300">CNC Machining</button>
+                <button class="px-4 py-2 rounded-full bg-gray-300 text-gray-700 text-sm font-semibold hover:bg-gray-400 transition duration-300">Casting</button>
+                <button class="px-4 py-2 rounded-full bg-gray-300 text-gray-700 text-sm font-semibold hover:bg-gray-400 transition duration-300">Forging</button>
+                <button class="px-4 py-2 rounded-full bg-gray-300 text-gray-700 text-sm font-semibold hover:bg-gray-400 transition duration-300">Global Projects</button>
+                <button class="px-4 py-2 rounded-full bg-gray-300 text-gray-700 text-sm font-semibold hover:bg-gray-400 transition duration-300">Electricals</button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Project Card 1 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover-effect">
+                    <img src="https://placehold.co/600x400/6B7A8F/ffffff?text=Automotive+Fabrication" alt="Automotive Fabrication" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-blueberry mb-2">Project Horizon: Cost Optimization Initiative</h3>
+                        <p class="text-gray-700 text-sm mb-4">Led a comprehensive cost optimization program for a critical product line, focusing on fabricated parts and assembly processes.</p>
+                        <ul class="text-sm text-gray-600 mb-4">
+                            <li>Technologies/Processes: Fabrication, Assembly, Value Engineering, Supplier Negotiation</li>
+                            <li>Cost-Saving Metric: Saved €0.81 million through process optimization and strategic sourcing.</li>
+                            <li>Impact: Enhanced product profitability and established new costing benchmarks.</li>
+                        </ul>
+                        <span class="inline-block bg-apricot text-white text-xs px-3 py-1 rounded-full">Global Projects</span>
+                        <span class="inline-block bg-gray-200 text-gray-700 text-xs px-3 py-1 rounded-full ml-2">Fabrication</span>
+                    </div>
+                </div>
+
+                <!-- Project Card 2 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover-effect">
+                    <img src="https://placehold.co/600x400/6B7A8F/ffffff?text=Forklift+Components" alt="Forklift Components" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-blueberry mb-2">Global Resourcing: RFQ & Costing for 500+ Parts</h3>
+                        <p class="text-gray-700 text-sm mb-4">Successfully managed RFQ and costing for over 500 parts in a complex global resourcing project.</p>
+                        <ul class="text-sm text-gray-600 mb-4">
+                            <li>Technologies/Processes: Casting, Forging, Machining, Supplier Assessment, Contract Negotiation</li>
+                            <li>Cost-Saving Metric: Optimized sourcing based on annual spend; improved supplier performance.</li>
+                            <li>Impact: Streamlined supply chain, ensured competitive pricing, and diversified sourcing base.</li>
+                        </ul>
+                        <span class="inline-block bg-apricot text-white text-xs px-3 py-1 rounded-full">Global Projects</span>
+                        <span class="inline-block bg-gray-200 text-gray-700 text-xs px-3 py-1 rounded-full ml-2">Casting</span>
+                        <span class="inline-block bg-gray-200 text-gray-700 text-xs px-3 py-1 rounded-full ml-2">Machining</span>
+                    </div>
+                </div>
+
+                <!-- Project Card 3 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover-effect">
+                    <img src="https://placehold.co/600x400/6B7A8F/ffffff?text=Mechanical+Tools" alt="Mechanical Tools" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-blueberry mb-2">High Voltage Cable - Wire Harness Cost Calculator</h3>
+                        <p class="text-gray-700 text-sm mb-4">Developed an Excel-based cost calculator for High Voltage Cables and Wire Harness assemblies.</p>
+                        <ul class="text-sm text-gray-600 mb-4">
+                            <li>Technologies/Processes: Electricals, Assembly, Excel Modeling, Data Analytics</li>
+                            <li>Cost-Saving Metric: Improved quoting accuracy and reduced manual calculation time by 40%.</li>
+                            <li>Impact: Enhanced efficiency in cost estimation for critical electrical components.</li>
+                        </ul>
+                        <span class="inline-block bg-apricot text-white text-xs px-3 py-1 rounded-full">Electricals</span>
+                        <span class="inline-block bg-gray-200 text-gray-700 text-xs px-3 py-1 rounded-full ml-2">Automation</span>
+                    </div>
+                </div>
+
+                <!-- Project Card 4 -->
+                <div class="bg-white rounded-lg shadow-md overflow-hidden card-hover-effect">
+                    <img src="https://placehold.co/600x400/6B7A8F/ffffff?text=Ground+Support+Equipment" alt="Ground Support Equipment" class="w-full h-48 object-cover">
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-blueberry mb-2">Ground Support Equipment Cost Analysis</h3>
+                        <p class="text-gray-700 text-sm mb-4">Delivered precise cost estimation and analysis for complex ground support equipment, including vehicles and cargo loaders.</p>
+                        <ul class="text-sm text-gray-600 mb-4">
+                            <li>Technologies/Processes: Heavy Fabrication, Frame & Chassis Machining, Assembly, Cost Analysis</li>
+                            <li>Cost-Saving Metric: Supported sourcing strategies leading to competitive product development.</li>
+                            <li>Impact: Enabled cost-effective procurement and optimized product designs.</li>
+                        </ul>
+                        <span class="inline-block bg-apricot text-white text-xs px-3 py-1 rounded-full">Heavy Fabrication</span>
+                        <span class="inline-block bg-gray-200 text-gray-700 text-xs px-3 py-1 rounded-full ml-2">Machining</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section id="blog" class="py-16 bg-white section-reveal">
+        <div class="container mx-auto px-4">
+            <h2 class="text-4xl font-bold text-blueberry mb-10 text-center">My Blog: Industry Insights</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+                <!-- Blog Post 1 - New -->
+                <div class="bg-apple-core rounded-lg shadow-md overflow-hidden card-hover-effect">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold text-blueberry mb-3">Leveraging Predictive Analytics and AI for Proactive Cost Management in Manufacturing</h3>
+                        <p class="text-gray-700 text-sm mb-4">The future of cost engineering lies in foresight. This article explores how advanced predictive analytics and AI/ML algorithms are transforming traditional reactive cost control into proactive cost management. We delve into real-world applications, from forecasting material price fluctuations and optimizing production schedules to identifying potential cost overruns before they occur. Learn how integrating AI into your costing models can provide unparalleled accuracy, reduce lead times, and drive strategic decision-making, moving beyond historical data to anticipate future cost landscapes.</p>
+                        <a href="#" class="text-apricot font-semibold hover:underline">Read More &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Blog Post 2 - New -->
+                <div class="bg-apple-core rounded-lg shadow-md overflow-hidden card-hover-effect">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold text-blueberry mb-3">Navigating Global Supply Chain Volatility: Strategies for Cost Resilience</h3>
+                        <p class="text-gray-700 text-sm mb-4">Recent global events have underscored the fragility of supply chains. This piece examines the critical role of cost engineers in building resilient supply chains that can withstand geopolitical shifts, economic downturns, and unforeseen disruptions. We discuss strategies such as multi-sourcing, localized production, inventory optimization, and hedging against currency fluctuations. Understanding the total cost implications of these resilience strategies is paramount to ensuring business continuity and maintaining competitive pricing in an unpredictable global market.</p>
+                        <a href="#" class="text-apricot font-semibold hover:underline">Read More &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Blog Post 3 - New -->
+                <div class="bg-apple-core rounded-lg shadow-md overflow-hidden card-hover-effect">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold text-blueberry mb-3">The True Cost of Sustainability: Integrating ESG Factors into Manufacturing Cost Models</h3>
+                        <p class="text-gray-700 text-sm mb-4">As environmental, social, and governance (ESG) factors become increasingly vital, understanding their financial impact on manufacturing is crucial. This article explores how expert cost engineers integrate sustainability metrics into their cost models, moving beyond traditional economic costs to include environmental footprints, social compliance, and governance overheads. We discuss methodologies for quantifying the costs and benefits of sustainable materials, energy-efficient processes, waste reduction, and ethical labor practices, demonstrating how ESG initiatives can drive long-term value and competitive advantage.</p>
+                        <a href="#" class="text-apricot font-semibold hover:underline">Read More &rarr;</a>
+                    </div>
+                </div>
+
+                <!-- Blog Post 4 - New -->
+                <div class="bg-apple-core rounded-lg shadow-md overflow-hidden card-hover-effect">
+                    <div class="p-6">
+                        <h3 class="text-2xl font-semibold text-blueberry mb-3">Beyond the Bill of Materials: Understanding Total Cost of Ownership (TCO) in Complex Industrial Projects</h3>
+                        <p class="text-gray-700 text-sm mb-4">For complex industrial projects, the initial purchase price is just one piece of the puzzle. This article dives deep into the concept of Total Cost of Ownership (TCO), a comprehensive approach that considers all direct and indirect costs associated with an asset or system throughout its entire lifecycle. From acquisition and operational costs (maintenance, energy, labor) to end-of-life expenses (disposal, decommissioning), understanding TCO enables more informed investment decisions, optimizes long-term profitability, and uncovers hidden cost drivers often overlooked in traditional costing methods.</p>
+                        <a href="#" class="text-apricot font-semibold hover:underline">Read More &rarr;</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Manufacturing & Process Database Section -->
+    <section id="database" class="py-16 bg-apple-core section-reveal">
+        <div class="container mx-auto px-4 max-w-5xl">
+            <h2 class="text-4xl font-bold text-blueberry mb-10 text-center">Manufacturing & Process Database Insights</h2>
+            <p class="text-center text-gray-700 mb-12">Leveraging comprehensive data to inform precision costing and strategic sourcing.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Machines & Profiles -->
+                <div class="bg-white rounded-lg shadow-md p-6 card-hover-effect">
+                    <h3 class="text-2xl font-semibold text-blueberry mb-4">Machines & Profiles</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li><a href="#" target="_blank" class="text-apricot hover:underline">CNC Machines:</a> Milling (3-axis, 5-axis), Lathes (2-axis, Multi-axis), Grinders</li>
+                        <li><a href="#" target="_blank" class="text-apricot hover:underline">Fabrication:</a> Lasers (Fiber, CO2), Waterjet Cutters, Press Machines (Stamping, Bending), Welders (MIG, TIG, Robotic)</li>
+                        <li>Standard Profiles: I-beam, C-beam, L-angle, HSS (Hollow Structural Structures), Tubes (Round, Square, Rectangular)</li>
+                        <li>Specialized Equipment: Forging Presses, Casting Furnaces, Semiconductor Fabrication Equipment (overview)</li>
+                    </ul>
+                </div>
+
+                <!-- Material Rates & Labor Benchmarks -->
+                <div class="bg-white rounded-lg shadow-md p-6 card-hover-effect">
+                    <h3 class="text-2xl font-semibold text-blueberry mb-4">Material Rates & Labor Benchmarks</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li><a href="#" target="_blank" class="text-apricot hover:underline">Common Materials:</a> Steel (Mild, Stainless, Alloy), Aluminum (6061, 7075), Copper, Brass</li>
+                        <li><a href="#" target="_blank" class="text-apricot hover:underline">Special Alloys:</a> Titanium, Inconel, Hastelloy (overview of cost drivers)</li>
+                        <li>Plastic Resins: ABS, Polycarbonate, Nylon (overview for injection molding)</li>
+                        <li><a href="#" target="_blank" class="text-apricot hover:underline">Labor Rate Benchmarks:</a> Regional variations (e.g., India, US, Mexico, Europe) for skilled and semi-skilled labor in manufacturing.</li>
+                    </ul>
+                </div>
+
+                <!-- Certification Requirements & ISO Standards -->
+                <div class="bg-white rounded-lg shadow-md p-6 card-hover-effect">
+                    <h3 class="text-2xl font-semibold text-blueberry mb-4">Certification & Standards Overview</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li>ISO 9001:2015: Quality Management Systems (QMS) - foundational for all manufacturing.</li>
+                        <li>ISO/TS 16949: Automotive Quality Management - specific to automotive supply chain.</li>
+                        <li>AS9100: Aerospace Quality Management Systems - critical for aerospace components.</li>
+                        <li>ISO 13485: Medical Devices Quality Management - for medical device manufacturing.</li>
+                        <li>FMEA (Failure Mode and Effects Analysis): Risk management tool for process and design.</li>
+                        <li>PPAP (Production Part Approval Process): Standardized method for approving new or revised parts.</li>
+                    </ul>
+                </div>
+
+                <!-- Logistics & Shipping Considerations -->
+                <div class="bg-white rounded-lg shadow-md p-6 card-hover-effect">
+                    <h3 class="text-2xl font-semibold text-blueberry mb-4">Logistics & Shipping Considerations</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li>Packaging: Material costs, labor for packing, specialized packaging for sensitive components.</li>
+                        <li>Tariffs & Duties: Impact of international trade agreements and regional specific duties on landed cost.</li>
+                        <li>Freight: Air vs. Sea freight costs, lead times, fuel surcharges, and optimal shipping routes.</li>
+                        <li>Incoterms: Understanding EXW, FOB, CIF, DDP, and their impact on cost responsibility.</li>
+                        <li>Customs Clearance: Documentation, brokerage fees, and potential delays.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools & Calculators Section -->
+    <section id="tools" class="py-16 bg-white section-reveal">
+        <div class="container mx-auto px-4 max-w-4xl">
+            <h2 class="text-4xl font-bold text-blueberry mb-10 text-center">Tools & Calculators</h2>
+            <p class="text-center text-gray-700 mb-12">Practical resources to aid in cost analysis and manufacturing decision-making.</p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Tool Card 1 -->
+                <div class="bg-apple-core rounded-lg shadow-md p-6 card-hover-effect">
+                    <h3 class="text-xl font-semibold text-blueberry mb-3">Material Utilization Calculator</h3>
+                    <p class="text-gray-700 text-sm mb-4">Estimate material waste and optimize raw material usage for various manufacturing processes (e.g., sheet metal cutting, machining). Input stock size, part dimensions, and cutting parameters to calculate yield and scrap.</p>
+                    <a href="#" class="text-apricot font-semibold hover:underline">Access Tool &rarr;</a>
+                </div>
+
+                <!-- Tool Card 2 -->
+                <div class="bg-apple-core rounded-lg shadow-md p-6 card-hover-effect">
+                    <h3 class="text-xl font-semibold text-blueberry mb-3">Manufacturing Process Selection Tool</h3>
+                    <p class="text-gray-700 text-sm mb-4">Interactive guide to help select the most cost-effective manufacturing process (e.g., casting vs. machining vs. additive manufacturing) based on material, complexity, volume, and desired tolerances.</p>
+                    <a href="#" class="text-apricot font-semibold hover:underline">Access Tool &rarr;</a>
+                </div>
+
+                <!-- Tool Card 3 -->
+                <div class="bg-apple-core rounded-lg shadow-md p-6 card-hover-effect">
+                    <h3 class="text-xl font-semibold text-blueberry mb-3">External Resources & Charts</h3>
+                    <p class="text-gray-700 text-sm mb-4">Curated links to valuable third-party resources, including <a href="#" target="_blank" class="text-apricot hover:underline">semiconductor fabrication cost calculators</a>, <a href="#" target="_blank" class="text-apricot hover:underline">welding cost charts</a>, <a href="#" target="_blank" class="text-apricot hover:underline">industry-specific material property databases</a>, and <a href="#" target="_blank" class="text-apricot hover:underline">cost calculators for fabrications</a>.</p>
+                    <a href="#" class="text-apricot font-semibold hover:underline">Explore All Resources &rarr;</a>
+                </div>
+
+                <!-- Tool Card 4 -->
+                <div class="bg-apple-core rounded-lg shadow-md p-6 card-hover-effect">
+                    <h3 class="text-xl font-semibold text-blueberry mb-3">Costing Comparison Charts</h3>
+                    <p class="text-gray-700 text-sm mb-4">Visual charts comparing the cost implications of different design choices, material grades, or production volumes across various manufacturing methods.</p>
+                    <a href="#" class="text-apricot font-semibold hover:underline">View Charts &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-16 bg-gradient-to-r-custom text-white section-reveal">
+        <div class="container mx-auto px-4 max-w-2xl text-center">
+            <h2 class="text-4xl font-bold mb-8">Get In Touch</h2>
+            <p class="text-lg text-gray-300 mb-8">Have a project in mind or want to discuss cost optimization strategies? Feel free to reach out!</p>
+            
+            <form class="bg-white p-8 rounded-lg shadow-xl text-left">
+                <div class="mb-4">
+                    <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Name</label>
+                    <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-apricot" placeholder="Your Name">
+                </div>
+                <div class="mb-4">
+                    <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                    <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-apricot" placeholder="your.email@example.com">
+                </div>
+                <div class="mb-6">
+                    <label for="message" class="block text-gray-700 text-sm font-bold mb-2">Message</label>
+                    <textarea id="message" name="message" rows="5" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:border-apricot" placeholder="Your message here..."></textarea>
+                </div>
+                <div class="flex items-center justify-between">
+                    <button type="submit" class="btn-primary w-full">Send Message</button>
+                </div>
+            </form>
+
+            <div class="mt-8 text-lg">
+                <p class="mb-4">Direct Email: <a href="mailto:harshit.singhai@email.com" class="text-citrus hover:underline">harshit.singhai@email.com</a></p>
+                <a href="https://www.linkedin.com/in/harshitsinghai" target="_blank" class="inline-flex items-center text-citrus hover:underline">
+                    <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                    </svg>
+                    Connect on LinkedIn
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-blueberry text-gray-300 py-8 text-center text-sm">
+        <div class="container mx-auto px-4">
+            <p>&copy; 2025 Harshit Singhai. All rights reserved.</p>
+            <p class="mt-2">Built with <span class="text-apricot">&hearts;</span> and a passion for cost optimization.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when a link is clicked
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Scroll-based reveals
+        const sections = document.querySelectorAll('.section-reveal');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    // observer.unobserve(entry.target); // Stop observing once visible if you want it to only animate once
+                } else {
+                    // Optional: remove is-visible when not intersecting to re-trigger on scroll up
+                    // entry.target.classList.remove('is-visible');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // Simple form submission (for demonstration, no backend)
+        const contactForm = document.querySelector('#contact form');
+        contactForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            // In a real application, you would send this data to a backend server.
+            // For now, we'll just log it and provide a simple alert.
+            const formData = new FormData(contactForm);
+            const formObject = {};
+            formData.forEach((value, key) => {
+                formObject[key] = value;
+            });
+            console.log('Form Submitted:', formObject);
+            alert('Thank you for your message, Harshit! I will get back to you soon.');
+            contactForm.reset(); // Clear the form
+        });
+    </script>
+</body>
+</html>
