@@ -44,6 +44,14 @@
         .btn-danger:hover {
             background-color: #b91c1c;
         }
+        .btn-success {
+            background-color: #16a34a;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-success:hover {
+            background-color: #15803d;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -55,7 +63,7 @@
         </header>
 
         <!-- Main Controls -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 p-6 bg-white rounded-xl shadow-lg">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 p-6 bg-white rounded-xl shadow-lg">
             <div>
                 <label for="machineType" class="block text-sm font-medium text-gray-700 mb-1">1. Select Machine Type</label>
                 <select id="machineType" class="form-select w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -74,6 +82,12 @@
                 <button id="addOperationBtn" class="btn-primary w-full py-2 px-4 rounded-lg font-semibold shadow-md flex items-center justify-center">
                     <i data-lucide="plus-circle" class="mr-2 h-5 w-5"></i>
                     Add Operation
+                </button>
+            </div>
+             <div class="flex items-end">
+                <button id="exportCsvBtn" class="btn-success w-full py-2 px-4 rounded-lg font-semibold shadow-md flex items-center justify-center">
+                    <i data-lucide="file-spreadsheet" class="mr-2 h-5 w-5"></i>
+                    Export to Excel
                 </button>
             </div>
         </div>
@@ -196,6 +210,7 @@
         const machineTypeSelect = document.getElementById('machineType');
         const materialTypeSelect = document.getElementById('materialType');
         const addOperationBtn = document.getElementById('addOperationBtn');
+        const exportCsvBtn = document.getElementById('exportCsvBtn');
         const operationsList = document.getElementById('operationsList');
         const loadUnloadSelector = document.getElementById('loadUnloadSelector');
 
@@ -232,6 +247,7 @@
             machineTypeSelect.addEventListener('change', updateAllCalculations);
             materialTypeSelect.addEventListener('change', updateAllCalculations);
             addOperationBtn.addEventListener('click', addOperation);
+            exportCsvBtn.addEventListener('click', exportToCSV);
             loadUnloadSelector.addEventListener('change', updateTotalCycleTime);
         }
 
@@ -613,6 +629,73 @@
             operationsBarChart.data.labels = operations.map((op, i) => `${i + 1}. ${op.type}`);
             operationsBarChart.data.datasets[0].data = operations.map(op => op.results.time);
             operationsBarChart.update();
+        }
+
+        // --- DATA EXPORT ---
+        function exportToCSV() {
+            if (operations.length === 0) {
+                console.warn("No operations to export.");
+                // A more user-friendly notification could be implemented here instead of an alert.
+                return;
+            }
+
+            let csvRows = [];
+
+            // --- Operations Section ---
+            csvRows.push("OPERATIONS");
+            // Dynamically create headers from all possible inputs to handle different operations
+            const allInputKeys = [...new Set(operations.flatMap(op => Object.keys(op.inputs)))];
+            const opHeaders = ["#", "Machine", "Operation Type", "RPM", "Linear Feed (mm/min)", "Passes", "Time (s)", ...allInputKeys.map(k => `Input: ${k}`)];
+            csvRows.push(opHeaders.join(','));
+
+            operations.forEach((op, index) => {
+                const rowData = {
+                    "#": index + 1,
+                    "Machine": op.machineType,
+                    "Operation Type": `"${op.type}"`, // Enclose in quotes to handle potential commas in the name
+                    "RPM": Math.round(op.results.rpm),
+                    "Linear Feed (mm/min)": Math.round(op.results.vf),
+                    "Passes": op.results.passes,
+                    "Time (s)": op.results.time.toFixed(2),
+                };
+
+                // Populate input values for the current row
+                allInputKeys.forEach(key => {
+                    rowData[`Input: ${key}`] = op.inputs[key] || ""; // Use empty string for inputs not present in this op
+                });
+                
+                // Map the data to the header order to ensure correctness
+                const row = opHeaders.map(header => rowData[header]);
+                csvRows.push(row.join(','));
+            });
+
+            // --- Summary Section ---
+            csvRows.push(""); // Blank line separator
+            csvRows.push("SUMMARY");
+            csvRows.push("Category,Time (s)");
+            csvRows.push(`"Total Machining Time",${document.getElementById('totalMachiningTime').textContent.replace(' s', '')}`);
+            csvRows.push(`"Load/Unload Time",${document.getElementById('loadUnloadTime').textContent.replace(' s', '')}`);
+            csvRows.push(`"Tool Index Time",${document.getElementById('toolIndexTime').textContent.replace(' s', '')}`);
+            csvRows.push(`"Rapid Traverse Time",${document.getElementById('rapidTime').textContent.replace(' s', '')}`);
+            csvRows.push(`"Total Cycle Time",${document.getElementById('totalCycleTime').textContent.replace(' s', '')}`);
+            csvRows.push(`"Total Cycle Time (min)",${document.getElementById('totalCycleTimeMinutes').textContent.replace(' min', '')}`);
+
+            // --- File Download Logic ---
+            const csvString = csvRows.join('\n');
+            const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            
+            // Feature detection for browser compatibility
+            if (link.download !== undefined) { 
+                const url = URL.createObjectURL(blob);
+                link.setAttribute("href", url);
+                link.setAttribute("download", "machining_report.csv");
+                link.style.visibility = 'hidden';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(url);
+            }
         }
 
     </script>
