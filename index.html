@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Machining Time Calculator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/lucide-react@0.292.0/dist/lucide-react.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .form-select, .form-input {
+            transition: all 0.3s ease;
+        }
+        .operation-card {
+            transition: all 0.3s ease;
+            border-left-width: 4px;
+        }
+        .operation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+        .summary-card {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+        }
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+        .btn-danger {
+            background-color: #dc2626;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-danger:hover {
+            background-color: #b91c1c;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="mb-8 text-center">
+            <h1 class="text-4xl font-bold text-gray-900">Interactive Machining Time Calculator</h1>
+            <p class="text-lg text-gray-600 mt-2">A comprehensive tool for process planning and cycle time estimation.</p>
+        </header>
+
+        <!-- Main Controls -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 p-6 bg-white rounded-xl shadow-lg">
+            <div>
+                <label for="machineType" class="block text-sm font-medium text-gray-700 mb-1">1. Select Machine Type</label>
+                <select id="machineType" class="form-select w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <option value="turning">CNC Turning</option>
+                    <option value="milling">CNC Milling</option>
+                    <option value="drilling">Radial Drilling</option>
+                </select>
+            </div>
+            <div>
+                <label for="materialType" class="block text-sm font-medium text-gray-700 mb-1">2. Select Material</label>
+                <select id="materialType" class="form-select w-full p-2 border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    <!-- Material options will be populated by JS -->
+                </select>
+            </div>
+            <div class="flex items-end">
+                <button id="addOperationBtn" class="btn-primary w-full py-2 px-4 rounded-lg font-semibold shadow-md flex items-center justify-center">
+                    <i data-lucide="plus-circle" class="mr-2 h-5 w-5"></i>
+                    Add Operation
+                </button>
+            </div>
+        </div>
+
+        <!-- Operations List -->
+        <div id="operationsList" class="space-y-6 mb-8">
+            <!-- Operation cards will be dynamically inserted here -->
+        </div>
+
+        <!-- Summary and Infographics -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- Summary Card -->
+            <div class="summary-card p-6 rounded-xl shadow-2xl">
+                <h2 class="text-2xl font-bold mb-4 flex items-center"><i data-lucide="bar-chart-2" class="mr-2 h-7 w-7"></i>Cycle Time Summary</h2>
+                <div class="space-y-3 text-lg">
+                    <div class="flex justify-between"><span>Total Machining Time:</span> <span id="totalMachiningTime" class="font-semibold">0.00 s</span></div>
+                    <div class="flex justify-between"><span>Load/Unload Time:</span> <span id="loadUnloadTime" class="font-semibold">0.00 s</span></div>
+                    <div class="flex justify-between"><span>Tool Index Time:</span> <span id="toolIndexTime" class="font-semibold">0.00 s</span></div>
+                    <div class="flex justify-between"><span>Rapid Traverse Time:</span> <span id="rapidTime" class="font-semibold">0.00 s</span></div>
+                    <hr class="border-blue-300 my-2">
+                    <div class="flex justify-between text-2xl font-bold pt-2">
+                        <span>Total Cycle Time:</span>
+                        <span id="totalCycleTime" class="bg-white text-blue-700 px-3 py-1 rounded-md">0.00 s</span>
+                    </div>
+                     <div class="flex justify-between text-xl font-bold pt-2">
+                        <span>(In Minutes):</span>
+                        <span id="totalCycleTimeMinutes" class="bg-white text-blue-700 px-3 py-1 rounded-md">0.00 min</span>
+                    </div>
+                </div>
+                 <div class="mt-6">
+                    <label for="loadUnloadSelector" class="block text-sm font-medium text-blue-200 mb-1">Part Handling Category</label>
+                    <select id="loadUnloadSelector" class="form-select w-full p-2 border border-blue-300 rounded-lg shadow-sm focus:ring-2 focus:ring-white focus:border-white bg-blue-600 text-white">
+                        <!-- Load/Unload options populated by JS -->
+                    </select>
+                </div>
+            </div>
+
+            <!-- Infographics -->
+            <div class="bg-white p-6 rounded-xl shadow-lg">
+                <h2 class="text-2xl font-bold mb-4 text-center">Time Distribution</h2>
+                <div class="h-64 md:h-80"><canvas id="timeBreakdownChart"></canvas></div>
+            </div>
+            
+            <div class="bg-white p-6 rounded-xl shadow-lg lg:col-span-2">
+                <h2 class="text-2xl font-bold mb-4 text-center">Time per Operation</h2>
+                 <div class="h-64 md:h-80"><canvas id="operationsBarChart"></canvas></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- DATABASE ---
+        // This section contains all the machining data derived from the report.
+        const DB = {
+            materials: [
+                "Mild Steel<180BHN", "Carbon & Alloy Steel<280BHN", "Carbon & Alloy Steel>280BHN",
+                "Cast Iron<450Mpa", "Cast Iron>450Mpa", "Steel Casting<450Mpa", "Steel Casting>450Mpa",
+                "Stainless Steel", "Aluminium Alloy"
+            ],
+            turning: {
+                "Rough Facing": { Vc: [200, 180, 140, 130, 120, 130, 100, 125, 250], fn: [0.30, 0.25, 0.25, 0.30, 0.25, 0.30, 0.20, 0.30, 0.40], DOC: [3.00, 2.50, 2.00, 3.00, 2.50, 3.00, 2.00, 2.00, 4.00] },
+                "Finish Facing": { Vc: [250, 200, 110, 155, 140, 155, 130, 170, 300], fn: [0.23, 0.20, 0.20, 0.25, 0.20, 0.20, 0.15, 0.15, 0.20], DOC: [0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50] },
+                "Rough turning": { Vc: [200, 180, 140, 130, 120, 130, 100, 125, 250], fn: [0.30, 0.25, 0.25, 0.30, 0.25, 0.30, 0.20, 0.30, 0.40], DOC: [3.00, 2.50, 2.00, 3.00, 2.50, 3.00, 2.00, 2.00, 4.00] },
+                "Finish turning": { Vc: [250, 200, 110, 155, 140, 155, 130, 170, 300], fn: [0.23, 0.20, 0.20, 0.25, 0.20, 0.20, 0.15, 0.15, 0.20], DOC: [0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50] },
+                "Rough Boring": { Vc: [160, 144, 112, 104, 96, 104, 80, 100, 200], fn: [0.27, 0.23, 0.23, 0.27, 0.23, 0.27, 0.18, 0.27, 0.36], DOC: [3.00, 2.50, 2.00, 3.00, 2.50, 3.00, 2.00, 2.00, 4.00] },
+                "Finish Boring": { Vc: [200, 160, 88, 124, 112, 124, 104, 136, 240], fn: [0.21, 0.18, 0.18, 0.23, 0.18, 0.18, 0.14, 0.14, 0.18], DOC: [0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50] },
+                "Groove OD": { Vc: [80, 70, 55, 80, 60, 80, 50, 60, 120], fn: [0.20, 0.15, 0.10, 0.15, 0.10, 0.15, 0.10, 0.15, 0.20] },
+                "Groove ID": { Vc: [72, 63, 50, 72, 54, 72, 45, 54, 108], fn: [0.20, 0.15, 0.10, 0.15, 0.10, 0.15, 0.10, 0.15, 0.20] },
+                "Thread turn external": { Vc: [60, 50, 52.5, 45, 40, 45, 35, 60, 90], fn: 'Pitch' },
+                "Thread turn internal": { Vc: [60, 45, 47.5, 40, 37.5, 40, 35, 50, 75], fn: 'Pitch' },
+                "Parting": { Vc: [72, 63, 49.5, 72, 54, 72, 45, 54, 108], fn: [0.20, 0.15, 0.10, 0.15, 0.10, 0.15, 0.10, 0.15, 0.20] },
+                "Drilling": { Vc: [45, 40, 35, 38, 35, 35, 30, 40, 50], fn: [0.20, 0.18, 0.16, 0.18, 0.15, 0.18, 0.12, 0.09, 0.20] },
+                "Rough taper turn": { Vc: [160, 144, 112, 104, 96, 104, 80, 100, 200], fn: [0.27, 0.23, 0.23, 0.27, 0.23, 0.27, 0.18, 0.27, 0.36], DOC: [3.00, 2.50, 2.00, 3.00, 2.50, 3.00, 2.00, 2.00, 4.00] },
+                "Finish taper turn": { Vc: [200, 160, 88, 124, 112, 124, 104, 136, 240], fn: [0.21, 0.18, 0.18, 0.23, 0.18, 0.18, 0.14, 0.14, 0.18], DOC: [0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50, 0.50] },
+            },
+            milling: {
+                "Rough Face Milling": { Vc: [150, 120, 130, 120, 110, 100, 90, 120, 300], fz: [0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20], DOC: [3.00, 2.50, 2.00, 3.50, 3.00, 3.00, 2.50, 2.00, 5.00] },
+                "Finish Face Milling": { Vc: [250, 200, 150, 200, 120, 200, 100, 200, 350], fz: [0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10, 0.10], DOC: [0.50, 0.40, 0.30, 0.50, 0.40, 0.50, 0.40, 0.30, 0.75] },
+                "Rough Boring": { Vc: [140, 120, 100, 120, 100, 120, 90, 70, 150], fz: [0.20, 0.20, 0.15, 0.20, 0.15, 0.15, 0.15, 0.12, 0.30], DOC: [2.00, 1.50, 1.00, 2.00, 1.50, 2.00, 1.50, 1.00, 3.00] },
+                "Finish Boring": { Vc: [160, 150, 130, 130, 120, 130, 100, 80, 200], fz: [0.10, 0.10, 0.09, 0.10, 0.09, 0.10, 0.09, 0.07, 0.10], DOC: [0.30, 0.25, 0.20, 0.30, 0.25, 0.30, 0.25, 0.20, 0.50] },
+                "Drilling": { Vc: [45, 40, 35, 38, 35, 35, 30, 40, 50], fz: [0.18, 0.18, 0.16, 0.18, 0.15, 0.18, 0.12, 0.09, 0.20] },
+                "Tapping": { Vc: [16, 10, 5, 15, 12, 15, 12, 6, 18], fz: 'Pitch' },
+                "Reaming": { Vc: [22, 20, 18, 20, 18, 20, 15, 20, 25], fz: [0.20, 0.20, 0.18, 0.20, 0.18, 0.20, 0.18, 0.15, 0.20] },
+                "Counter Drill": { Vc: [46, 42, 39, 25, 25, 25, 25, 18, 53], fz: [0.12, 0.12, 0.11, 0.12, 0.07, 0.12, 0.07, 0.11, 0.18] },
+                "Chamfering": { Vc: [50, 46, 42, 27, 27, 27, 27, 19, 58], fz: [0.13, 0.13, 0.12, 0.13, 0.08, 0.13, 0.08, 0.12, 0.20] },
+                "Rough End Mill": { Vc: [90, 80, 70, 90, 80, 90, 70, 80, 130], fz: [0.30, 0.30, 0.30, 0.30, 0.20, 0.30, 0.20, 0.30, 0.60] },
+                "Finish End Mill": { Vc: [110, 90, 80, 100, 90, 100, 80, 90, 140], fz: [0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.15, 0.20, 0.50] },
+                "Groove Milling": { Vc: [55, 55, 50, 55, 50, 55, 46, 36, 69], fz: [0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.20, 0.25] },
+            },
+            drilling: {
+                "Drilling": { Vc: [45, 40, 35, 38, 35, 35, 30, 40, 50], fn: [0.20, 0.18, 0.16, 0.18, 0.15, 0.18, 0.12, 0.09, 0.20] },
+                "Tapping": { Vc: [16, 10, 5, 15, 12, 15, 12, 6, 18], fn: 'Pitch' },
+                "Reaming": { Vc: [22, 20, 18, 20, 18, 20, 15, 20, 25], fn: [0.20, 0.20, 0.18, 0.20, 0.18, 0.20, 0.18, 0.15, 0.20] },
+                "Counter Drill": { Vc: [46, 42, 39, 25, 25, 25, 25, 18, 53], fn: [0.12, 0.12, 0.11, 0.12, 0.07, 0.12, 0.07, 0.11, 0.18] },
+                "Chamfering": { Vc: [50, 46, 42, 27, 27, 27, 27, 19, 58], fn: [0.13, 0.13, 0.12, 0.13, 0.08, 0.13, 0.08, 0.12, 0.20] },
+            },
+            faceMillInserts: { 50: 4, 63: 5, 80: 6, 100: 7, 125: 8, 160: 12, 200: 16, 250: 18 },
+            loadUnloadTimes: [
+                { category: "Very Small, Simple (<1 kg)", time: 30 }, { category: "Small, Simple (1-5 kg)", time: 60 },
+                { category: "Medium, Simple (5-15 kg)", time: 120 }, { category: "Medium, Complex / Large (15-50 kg)", time: 240 },
+                { category: "Very Large, Simple (50-100 kg)", time: 300 }, { category: "Very Large, Complex (100-150 kg)", time: 360 },
+                { category: "Extremely Large (150-200 kg)", time: 420 }, { category: "Extremely Large (200-250 kg)", time: 480 },
+                { category: "Extremely Large (250-300 kg)", time: 540 }, { category: "Extremely Large (300-350 kg)", time: 600 },
+                { category: "Massive (>350 kg)", time: 900 }
+            ],
+            nonCutting: {
+                toolIndexTime: 3, // seconds
+                rapidTime: 0.4, // seconds
+            }
+        };
+
+        // --- GLOBAL STATE ---
+        let operations = [];
+        let timeBreakdownChart;
+        let operationsBarChart;
+
+        // --- DOM ELEMENTS ---
+        const machineTypeSelect = document.getElementById('machineType');
+        const materialTypeSelect = document.getElementById('materialType');
+        const addOperationBtn = document.getElementById('addOperationBtn');
+        const operationsList = document.getElementById('operationsList');
+        const loadUnloadSelector = document.getElementById('loadUnloadSelector');
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            populateMaterialSelect();
+            populateLoadUnloadSelect();
+            setupEventListeners();
+            initializeCharts();
+            updateAllCalculations();
+        });
+
+        function populateMaterialSelect() {
+            DB.materials.forEach((material, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = material;
+                materialTypeSelect.appendChild(option);
+            });
+        }
+
+        function populateLoadUnloadSelect() {
+            DB.loadUnloadTimes.forEach((item, index) => {
+                const option = document.createElement('option');
+                option.value = item.time;
+                option.textContent = `${item.category} (${item.time}s)`;
+                loadUnloadSelector.appendChild(option);
+            });
+            loadUnloadSelector.value = DB.loadUnloadTimes[1].time; // Default to a common value
+        }
+        
+        function setupEventListeners() {
+            machineTypeSelect.addEventListener('change', updateAllCalculations);
+            materialTypeSelect.addEventListener('change', updateAllCalculations);
+            addOperationBtn.addEventListener('click', addOperation);
+            loadUnloadSelector.addEventListener('change', updateTotalCycleTime);
+        }
+
+        // --- OPERATION MANAGEMENT ---
+        function addOperation() {
+            const opId = `op-${Date.now()}`;
+            const machineType = machineTypeSelect.value;
+            const newOp = {
+                id: opId,
+                machineType: machineType,
+                type: Object.keys(DB[machineType])[0],
+                inputs: {},
+                results: { time: 0 }
+            };
+            operations.push(newOp);
+            renderOperationCard(newOp);
+            updateAllCalculations();
+        }
+
+        function removeOperation(opId) {
+            operations = operations.filter(op => op.id !== opId);
+            document.getElementById(opId).remove();
+            updateAllCalculations();
+        }
+
+        function renderOperationCard(op) {
+            const card = document.createElement('div');
+            card.id = op.id;
+            card.className = 'operation-card bg-white rounded-xl shadow-md p-5 border-l-blue-500';
+            
+            const machineType = machineTypeSelect.value;
+            const opData = DB[machineType];
+            
+            let optionsHtml = '';
+            for (const opName in opData) {
+                optionsHtml += `<option value="${opName}" ${op.type === opName ? 'selected' : ''}>${opName}</option>`;
+            }
+
+            card.innerHTML = `
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-800">${op.type}</h3>
+                        <p class="text-sm text-gray-500">Operation #${operations.length}</p>
+                    </div>
+                    <button class="remove-op-btn btn-danger rounded-full p-2 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                        <i data-lucide="trash-2" class="h-5 w-5"></i>
+                    </button>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Operation Type</label>
+                        <select class="op-type-select form-select w-full mt-1 p-2 border-gray-300 rounded-md">${optionsHtml}</select>
+                    </div>
+                    <div class="op-inputs-container grid grid-cols-2 gap-4 md:col-span-1">
+                        ${getInputsForOperation(op)}
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-4 border-t border-gray-200 grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div><p class="text-sm text-gray-500">RPM</p><p class="op-result-rpm font-bold text-lg text-blue-600">0</p></div>
+                    <div><p class="text-sm text-gray-500">Linear Feed</p><p class="op-result-vf font-bold text-lg text-blue-600">0 mm/min</p></div>
+                    <div><p class="text-sm text-gray-500"># Passes</p><p class="op-result-passes font-bold text-lg text-blue-600">0</p></div>
+                    <div><p class="text-sm text-gray-500">Time</p><p class="op-result-time font-bold text-lg text-green-600">0.00 s</p></div>
+                </div>
+            `;
+            
+            operationsList.appendChild(card);
+            lucide.createIcons(); // Re-render icons
+
+            // Add event listeners for the new card
+            card.querySelector('.remove-op-btn').addEventListener('click', () => removeOperation(op.id));
+            card.querySelector('.op-type-select').addEventListener('change', (e) => {
+                op.type = e.target.value;
+                card.querySelector('h3').textContent = op.type;
+                card.querySelector('.op-inputs-container').innerHTML = getInputsForOperation(op);
+                updateAllCalculations();
+            });
+            card.addEventListener('input', () => updateAllCalculations());
+        }
+
+        function getInputsForOperation(op) {
+            const opType = op.type;
+            let inputsHtml = '';
+
+            const createInput = (name, label, defaultValue, unit = 'mm') => `
+                <div class="op-input">
+                    <label class="block text-sm font-medium text-gray-700">${label}</label>
+                    <input type="number" name="${name}" value="${op.inputs[name] || defaultValue}" class="form-input w-full mt-1 p-2 border-gray-300 rounded-md" placeholder="${defaultValue}">
+                </div>
+            `;
+            
+            // Common inputs
+            if (op.machineType === 'turning') {
+                if (opType.includes('Facing') || opType.includes('Parting') || opType.includes('Groove OD')) {
+                    inputsHtml += createInput('partDia', 'Part Dia', 100);
+                }
+                if (opType.includes('turning') || opType.includes('Boring') || opType.includes('taper')) {
+                     inputsHtml += createInput('startDia', 'Start Dia', 100);
+                     inputsHtml += createInput('endDia', 'End Dia', 94);
+                }
+                if (opType.includes('turning') || opType.includes('Boring') || opType.includes('taper') || opType.includes('Thread')) {
+                    inputsHtml += createInput('length', 'Length', 50);
+                }
+                 if (opType.includes('Groove')) {
+                    inputsHtml += createInput('grooveDepth', 'Groove Depth', 5);
+                    inputsHtml += createInput('grooveWidth', 'Groove Width', 3);
+                    inputsHtml += createInput('toolWidth', 'Tool Width', 3);
+                }
+                if (opType.includes('Thread')) {
+                    inputsHtml += createInput('pitch', 'Pitch', 1.5);
+                    inputsHtml += createInput('threadPasses', '# Passes', 8);
+                }
+                 if (opType.includes('Drilling')) {
+                    inputsHtml += createInput('toolDia', 'Tool Dia', 10);
+                    inputsHtml += createInput('depth', 'Hole Depth', 20);
+                }
+            } else if (op.machineType === 'milling') {
+                inputsHtml += createInput('toolDia', 'Tool Dia', opType.includes('Face') ? 80 : 20);
+                if (opType.includes('Face')) {
+                    inputsHtml += createInput('partWidth', 'Part Width', 150);
+                    inputsHtml += createInput('allowance', 'Allowance', 3);
+                } else if (opType.includes('End Mill') || opType.includes('Groove Milling')) {
+                    inputsHtml += createInput('slotLength', 'Slot Length', 100);
+                    inputsHtml += createInput('slotDepth', 'Slot Depth', 10);
+                } else if (opType.includes('Drilling') || opType.includes('Reaming') || opType.includes('Counter Drill') || opType.includes('Chamfering')) {
+                    inputsHtml += createInput('depth', 'Hole Depth', 20);
+                } else if (opType.includes('Tapping')) {
+                     inputsHtml += createInput('depth', 'Tapping Depth', 15);
+                     inputsHtml += createInput('pitch', 'Pitch', 1.5);
+                }
+                if (opType.includes('Boring')) {
+                    inputsHtml += createInput('startDia', 'Start Dia', 48);
+                    inputsHtml += createInput('endDia', 'End Dia', 50);
+                    inputsHtml += createInput('depth', 'Bore Depth', 30);
+                }
+            } else if (op.machineType === 'drilling') {
+                 inputsHtml += createInput('toolDia', 'Tool Dia', 10);
+                 inputsHtml += createInput('depth', 'Hole Depth', 20);
+                 if (opType.includes('Tapping')) {
+                     inputsHtml += createInput('pitch', 'Pitch', 1.5);
+                 }
+            }
+
+            return inputsHtml;
+        }
+
+        // --- CALCULATION ENGINE ---
+        function updateAllCalculations() {
+            operations.forEach(op => {
+                calculateOperation(op);
+                updateOperationCardUI(op);
+            });
+            updateTotalCycleTime();
+        }
+        
+        function calculateOperation(op) {
+            // 1. Get all inputs from the form
+            const card = document.getElementById(op.id);
+            const inputs = {};
+            card.querySelectorAll('.op-input input').forEach(input => {
+                inputs[input.name] = parseFloat(input.value) || 0;
+            });
+            op.inputs = inputs;
+
+            // 2. Get parameters from DB
+            const machine = op.machineType;
+            const opType = op.type;
+            const materialIndex = parseInt(materialTypeSelect.value);
+            const opParams = DB[machine][opType];
+            
+            if (!opParams) {
+                op.results = { time: 0, rpm: 0, vf: 0, passes: 0 };
+                return;
+            }
+
+            const Vc = opParams.Vc[materialIndex];
+            let feed = Array.isArray(opParams.fn) ? opParams.fn[materialIndex] : (Array.isArray(opParams.fz) ? opParams.fz[materialIndex] : opParams.fn || opParams.fz);
+            let DOC = opParams.DOC ? opParams.DOC[materialIndex] : 0;
+            
+            // 3. Perform calculations
+            let D = 0, L = 0, passes = 1, rpm = 0, vf = 0, time = 0;
+            const approachOverrun = 2; // mm
+
+            if (machine === 'turning') {
+                if (opType.includes('Facing')) {
+                    D = inputs.partDia / 2; // Average Diameter
+                    L = (inputs.partDia / 2) + approachOverrun;
+                    const allowance = DB.turning[opType].Allowance ? DB.turning[opType].Allowance[materialIndex] : 0.5;
+                    passes = Math.ceil(allowance / DOC) || 1;
+                } else if (opType.includes('turning') || opType.includes('Boring') || opType.includes('taper')) {
+                    D = (inputs.startDia + inputs.endDia) / 2;
+                    L = inputs.length + approachOverrun;
+                    const allowance = Math.abs(inputs.startDia - inputs.endDia);
+                    passes = Math.ceil((allowance / 2) / DOC) || 1;
+                } else if (opType.includes('Parting')) {
+                    D = inputs.partDia / 2; // Average Diameter
+                    L = inputs.partDia / 2;
+                    passes = 1;
+                } else if (opType.includes('Drilling')) {
+                    D = inputs.toolDia;
+                    L = inputs.depth + (0.3 * D);
+                    passes = 1;
+                } else if (opType.includes('Groove')) {
+                    D = inputs.partDia;
+                    L = inputs.grooveDepth;
+                    passes = Math.ceil(inputs.grooveWidth / (inputs.toolWidth * 0.8)) || 1;
+                } else if (opType.includes('Thread')) {
+                    D = inputs.startDia;
+                    L = inputs.length + approachOverrun;
+                    feed = inputs.pitch;
+                    passes = inputs.threadPasses;
+                }
+                
+                rpm = (Vc * 1000) / (Math.PI * D) || 0;
+                vf = feed * rpm;
+                time = (L * 60 / vf) * passes || 0;
+
+                // Special case for parting
+                if(opType.includes('Parting')) {
+                    const time1 = ((L * 0.95) * 60) / vf;
+                    const time2 = ((L * 0.05) * 60) / (vf * 0.5);
+                    time = time1 + time2;
+                }
+
+            } else if (machine === 'milling') {
+                D = inputs.toolDia;
+                rpm = (Vc * 1000) / (Math.PI * D) || 0;
+                let z = 1; // Number of teeth
+                
+                if (opType.includes('Face Milling')) {
+                    z = DB.faceMillInserts[inputs.toolDia] || 4;
+                    L = inputs.partWidth + D;
+                    passes = Math.ceil(inputs.allowance / DOC) || 1;
+                } else if (opType.includes('End Mill') || opType.includes('Groove Milling')) {
+                    z = 4; // Assume 4-flute end mill
+                    L = inputs.slotLength + D;
+                    passes = Math.ceil(inputs.slotDepth / DOC) || 1;
+                } else if (opType.includes('Drilling') || opType.includes('Reaming') || opType.includes('Counter Drill') || opType.includes('Chamfering')) {
+                    z = 2; // Drills/Reamers have 2 flutes
+                    L = inputs.depth + (0.3 * D);
+                    passes = 1;
+                } else if (opType.includes('Tapping')) {
+                    z = 1;
+                    feed = inputs.pitch;
+                    L = inputs.depth * 2; // In and out
+                    passes = 1;
+                    vf = feed * rpm; // Special feed calc for tapping
+                } else if (opType.includes('Boring')) {
+                    z = 1; // Single point boring
+                    D = (inputs.startDia + inputs.endDia) / 2;
+                    rpm = (Vc * 1000) / (Math.PI * D) || 0;
+                    L = inputs.depth + approachOverrun;
+                    const allowance = Math.abs(inputs.startDia - inputs.endDia);
+                    passes = Math.ceil((allowance / 2) / DOC) || 1;
+                }
+                
+                if (!opType.includes('Tapping')) {
+                    vf = feed * z * rpm;
+                }
+                time = (L * 60 / vf) * passes || 0;
+
+            } else if (machine === 'drilling') {
+                D = inputs.toolDia;
+                rpm = (Vc * 1000) / (Math.PI * D) || 0;
+                if (opType === 'Tapping') {
+                    feed = inputs.pitch;
+                    L = inputs.depth * 2;
+                } else {
+                    L = inputs.depth + (0.3 * D);
+                }
+                vf = feed * rpm;
+                time = (L * 60 / vf) || 0;
+                passes = 1;
+            }
+
+            op.results = { time, rpm, vf, passes };
+        }
+
+        function updateOperationCardUI(op) {
+            const card = document.getElementById(op.id);
+            if (!card) return;
+            card.querySelector('.op-result-rpm').textContent = Math.round(op.results.rpm).toLocaleString();
+            card.querySelector('.op-result-vf').textContent = `${Math.round(op.results.vf)} mm/min`;
+            card.querySelector('.op-result-passes').textContent = op.results.passes;
+            card.querySelector('.op-result-time').textContent = `${op.results.time.toFixed(2)} s`;
+        }
+
+        function updateTotalCycleTime() {
+            const totalMachiningTime = operations.reduce((sum, op) => sum + op.results.time, 0);
+            const loadTime = parseFloat(loadUnloadSelector.value) || 0;
+            const numTools = operations.length; // Assume one tool per operation for simplicity
+            const toolChanges = numTools > 0 ? numTools - 1 : 0;
+            const indexTime = toolChanges * DB.nonCutting.toolIndexTime;
+            const rapidMoves = numTools;
+            const rapidTimeVal = rapidMoves * DB.nonCutting.rapidTime;
+
+            const totalTime = totalMachiningTime + loadTime + indexTime + rapidTimeVal;
+
+            document.getElementById('totalMachiningTime').textContent = `${totalMachiningTime.toFixed(2)} s`;
+            document.getElementById('loadUnloadTime').textContent = `${loadTime.toFixed(2)} s`;
+            document.getElementById('toolIndexTime').textContent = `${indexTime.toFixed(2)} s`;
+            document.getElementById('rapidTime').textContent = `${rapidTimeVal.toFixed(2)} s`;
+            document.getElementById('totalCycleTime').textContent = `${totalTime.toFixed(2)} s`;
+            document.getElementById('totalCycleTimeMinutes').textContent = `${(totalTime / 60).toFixed(2)} min`;
+
+            updateCharts(totalMachiningTime, loadTime, indexTime, rapidTimeVal);
+        }
+
+        // --- CHARTING ---
+        function initializeCharts() {
+            const timeCtx = document.getElementById('timeBreakdownChart').getContext('2d');
+            timeBreakdownChart = new Chart(timeCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Machining', 'Load/Unload', 'Tool Index', 'Rapid Traverse'],
+                    datasets: [{
+                        data: [0, 0, 0, 0],
+                        backgroundColor: ['#3b82f6', '#10b981', '#f97316', '#8b5cf6'],
+                        borderColor: '#ffffff',
+                        borderWidth: 2,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed !== null) {
+                                        label += context.parsed.toFixed(2) + ' s';
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const opCtx = document.getElementById('operationsBarChart').getContext('2d');
+            operationsBarChart = new Chart(opCtx, {
+                type: 'bar',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Machining Time (s)',
+                        data: [],
+                        backgroundColor: '#3b82f6',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    scales: {
+                        x: { beginAtZero: true, title: { display: true, text: 'Time (seconds)' } },
+                        y: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function updateCharts(machining, load, index, rapid) {
+            // Update Doughnut Chart
+            timeBreakdownChart.data.datasets[0].data = [machining, load, index, rapid];
+            timeBreakdownChart.update();
+
+            // Update Bar Chart
+            operationsBarChart.data.labels = operations.map((op, i) => `${i + 1}. ${op.type}`);
+            operationsBarChart.data.datasets[0].data = operations.map(op => op.results.time);
+            operationsBarChart.update();
+        }
+
+    </script>
+</body>
+</html>
